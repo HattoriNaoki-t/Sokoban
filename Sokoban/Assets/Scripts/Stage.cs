@@ -69,22 +69,23 @@ public class Stage : MonoBehaviour {
         {
             case 0: break;
             case 1:
-                if(MapChip[_playerY][_playerX - 1] == 3&& MapChip[_playerY][_playerX - 2] != 1)
-                {
-                    iTween.MoveBy(GameObject.Find("[" + _playerY + "," + (_playerX-1) + "]"), iTween.Hash("x", -32f));
-                    MapChip[_playerY][_playerX] = 0;
-                    MapChip[_playerY][_playerX - 1] = 3;
-
-                }
                 _playerX--;
+                if (MapChip[_playerY][_playerX ] == 3&& MapChip[_playerY][_playerX - 1] != 1)
+                {
+                    Debug.Log("sabbbbbbbbbbbbbbbbb");
+                    iTween.MoveBy(GameObject.Find("[" + _playerY + "," + (_playerX) + "]"), iTween.Hash("x", -32f));
+                    //MapChip[_playerY][_playerX] = 4;
+                    GameObject.Find("[" + _playerY + "," + (_playerX-1) + "]").name = "-";
+                    MapChip[_playerY][_playerX-1] = 3;
+                }
                 break;
             case 2:
+                _playerX++;
                 if (MapChip[_playerY][_playerX + 1] == 3 && MapChip[_playerY][_playerX + 2] != 1)
                 {
                     iTween.MoveBy(GameObject.Find("[" + _playerY + "," + (_playerX + 1) + "]"), iTween.Hash("x", 32f));
                     MapChip[_playerY][_playerX + 1] = 3;
                 }
-                _playerX++;
                 break;
             case 3:
                 if (MapChip[_playerY + 1][_playerX] == 3 && MapChip[_playerY + 2][_playerX] != 1)
