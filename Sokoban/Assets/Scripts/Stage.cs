@@ -60,25 +60,25 @@ public class Stage : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        switch (player.GetComponent<PlayerMove>().getMoveDirection())
-        {
-            case 0: break;
-            case 1:
-                _playerX--;
-                break;
-            case 2:
-                _playerX++;
-                break;
-            case 3:
-                _playerY--;
-                break;
-            case 4:
-                _playerY++;
-                break;
-        }
-        Debug.Log(_playerX);
-        Debug.Log(_playerY);
-        Debug.Log(MapChip[14][1]);
+        //switch (player.GetComponent<PlayerMove>().getMoveDirection())
+        //{
+        //    case 0: break;
+        //    case 1:
+        //        _playerX--;
+        //        break;
+        //    case 2:
+        //        _playerX++;
+        //        break;
+        //    case 3:
+        //        _playerY--;
+        //        break;
+        //    case 4:
+        //        _playerY++;
+        //        break;
+        //}
+        //Debug.Log(_playerX);
+        //Debug.Log(_playerY);
+        //Debug.Log(MapChip[14][1]);
 
     }
     public bool isthrough(string dire)
@@ -102,5 +102,14 @@ public class Stage : MonoBehaviour {
                 break;
         }
         return true;
+    }
+    public int[] getPlayerPositon()
+    {
+        int[] playerPos= { 0,0};
+
+        playerPos[0] = _playerX;
+        playerPos[1] = _playerY;
+
+        return playerPos;
     }
 }
