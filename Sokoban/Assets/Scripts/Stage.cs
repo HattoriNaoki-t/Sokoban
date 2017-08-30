@@ -15,7 +15,7 @@ public class Stage : MonoBehaviour {
         new int[]{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
         new int[]{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
         new int[]{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-        new int[]{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+        new int[]{1,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,1},
         new int[]{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
         new int[]{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
         new int[]{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -37,6 +37,7 @@ public class Stage : MonoBehaviour {
     // Use this for initialization
     void Start () {
         Empty = GameObject.Find("Stages");
+
         for (int i = 0; i < 15; i++)
         {
             for (int j = 0; j < 20; j++)
@@ -44,15 +45,19 @@ public class Stage : MonoBehaviour {
                 GameObject chip=null;
                 switch (MapChip[i][j])
                 {
-                    case 0:chip = Instantiate(obj[0], new Vector2((j * 32) - 320 + 16, i * -32 + 240 - 16), Quaternion.identity); break;
+                    case 0: chip = Instantiate(obj[0], new Vector2((j * 32) - 320 + 16, i * -32 + 240 - 16), Quaternion.identity); break;
                     case 1: chip = Instantiate(obj[1], new Vector2((j * 32) - 320 + 16, i * -32 + 240 - 16), Quaternion.identity); break;
-                    case 2: chip = Instantiate(obj[2], new Vector2((j * 32) - 320 + 16, i * -32 + 240 - 16), Quaternion.identity); break;
-                    case 3: chip = Instantiate(obj[3], new Vector2((j * 32) - 320 + 16, i * -32 + 240 - 16), Quaternion.identity); break;
+                    case 2: chip = Instantiate(obj[0], new Vector2((j * 32) - 320 + 16, i * -32 + 240 - 16), Quaternion.identity);
+                        chip = Instantiate(obj[2], new Vector2((j * 32) - 320 + 16, i * -32 + 240 - 16), Quaternion.identity); break;
+                    case 3:
+                        chip = Instantiate(obj[0], new Vector2((j * 32) - 320 + 16, i * -32 + 240 - 16), Quaternion.identity);
+                        chip = Instantiate(obj[3], new Vector2((j * 32) - 320 + 16, i * -32 + 240 - 16), Quaternion.identity); break;
                     case 4:
                         chip = Instantiate(obj[0], new Vector2((j * 32) - 320 + 16, i * -32 + 240 - 16), Quaternion.identity);
                         chip = Instantiate(obj[4], new Vector2((j * 32) - 320 + 16, i * -32 + 240 - 16), Quaternion.identity);
                         break;
                 }
+                chip.name = "[" + i + "," + j + "]";
                 chip.transform.parent = Empty.transform;
             }
         }
@@ -65,42 +70,75 @@ public class Stage : MonoBehaviour {
             case 0: break;
             case 1:
                 _playerX--;
+                if (MapChip[_playerY][_playerX ] == 3&& MapChip[_playerY][_playerX - 1] != 1)
+                {
+                    Debug.Log("sabbbbbbbbbbbbbbbbb");
+                    iTween.MoveBy(GameObject.Find("[" + _playerY + "," + (_playerX) + "]"), iTween.Hash("x", -32f));
+                    //MapChip[_playerY][_playerX] = 4;
+                    GameObject.Find("[" + _playerY + "," + (_playerX-1) + "]").name = "-";
+                    MapChip[_playerY][_playerX-1] = 3;
+                }
                 break;
             case 2:
                 _playerX++;
+                if (MapChip[_playerY][_playerX + 1] == 3 && MapChip[_playerY][_playerX + 2] != 1)
+                {
+                    iTween.MoveBy(GameObject.Find("[" + _playerY + "," + (_playerX + 1) + "]"), iTween.Hash("x", 32f));
+                    MapChip[_playerY][_playerX + 1] = 3;
+                }
                 break;
             case 3:
+                if (MapChip[_playerY + 1][_playerX] == 3 && MapChip[_playerY + 2][_playerX] != 1)
+                {
+                    iTween.MoveBy(GameObject.Find("[" + (_playerY+1) + "," + _playerX + "]"), iTween.Hash("y", 32f));
+                    MapChip[_playerY + 1][_playerX ] = 3;
+                }
                 _playerY--;
                 break;
             case 4:
+                if (MapChip[_playerY -1 ][_playerX] == 3 && MapChip[_playerY-2][_playerX] != 1)
+                {
+                    iTween.MoveBy(GameObject.Find("[" + (_playerY - 1) + "," + _playerX + "]"), iTween.Hash("y", 32f));
+                    MapChip[_playerY - 1][_playerX] = 3;
+                }
                 _playerY++;
                 break;
         }
         Debug.Log(_playerX);
         Debug.Log(_playerY);
-        Debug.Log(MapChip[14][1]);
+        //Debug.Log(MapChip[_playerY][_playerX]);
 
     }
     public bool isthrough(string dire)
     {
         switch (dire) {
             case "left":
-                if (MapChip[_playerX - 1][_playerY] == 1)
+                if (MapChip[_playerY ][_playerX-1] == 1)
                     return false;
                 break;
             case "right":
-                if (MapChip[_playerX + 1][_playerY] == 1)
+                if (MapChip[_playerY][_playerX+1] == 1)
+                {
+                    Debug.Log("右");
                     return false;
+                }
                 break;
             case "up":
-                if (MapChip[_playerX][_playerY - 1] == 1)
+                if (MapChip[_playerY-1][_playerX ] == 1)
                     return false;
                 break;
             case "down":
-                if (MapChip[_playerX][_playerY + 1] == 1)
+                if (MapChip[_playerY+1][_playerX] == 1)
                     return false;
                 break;
         }
         return true;
+    }
+    public int[] getPlayerPos()
+    {
+        int[] Pos = null;
+        Pos[0] = _playerX;
+        Pos[1] = _playerY;
+        return Pos;
     }
 }

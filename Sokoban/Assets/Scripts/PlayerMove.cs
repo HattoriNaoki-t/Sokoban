@@ -9,6 +9,10 @@ public class PlayerMove : MonoBehaviour {
 
     public GameObject stage;
 
+    public float buttonWait=1.05f;
+
+    public bool buttonDown = false;
+
     // Use this for initialization
     void Start () {
         _movedirection = 0;
@@ -18,26 +22,42 @@ public class PlayerMove : MonoBehaviour {
 	void Update ()
     {
         _movedirection = 0;
-        if (stage.GetComponent<Stage>().isthrough("left") && Input.GetKeyDown(KeyCode.LeftArrow))
+
+        if (stage.GetComponent<Stage>().isthrough("left") && Input.GetKeyDown(KeyCode.LeftArrow)&&buttonDown == false)
         {
-            gameObject.transform.Translate(new Vector2(-32,0));
+            buttonDown = true;
+            //gameObject.transform.Translate(new Vector2(-32,0));
+            iTween.MoveBy(gameObject, iTween.Hash("x", -32f));
             _movedirection = 1;
         }
-        if (stage.GetComponent<Stage>().isthrough("right") && Input.GetKeyDown(KeyCode.RightArrow))
+        if (stage.GetComponent<Stage>().isthrough("right") && Input.GetKeyDown(KeyCode.RightArrow) && buttonDown == false)
         {
-            gameObject.transform.Translate(new Vector2(32, 0));
+            buttonDown = true;
+            iTween.MoveBy(gameObject, iTween.Hash("x", 32f));
             _movedirection = 2;
         }
-        if (stage.GetComponent<Stage>().isthrough("up") && Input.GetKeyDown(KeyCode.UpArrow) )
+        if (stage.GetComponent<Stage>().isthrough("up") && Input.GetKeyDown(KeyCode.UpArrow) && buttonDown == false)
         {
-            gameObject.transform.Translate(new Vector2(0, 32));
+            buttonDown = true;
+            iTween.MoveBy(gameObject, iTween.Hash("y", 32f));
             _movedirection = 3;
         }
-        if (stage.GetComponent<Stage>().isthrough("down") && Input.GetKeyDown(KeyCode.DownArrow))
+        if (stage.GetComponent<Stage>().isthrough("down") && Input.GetKeyDown(KeyCode.DownArrow) && buttonDown == false)
         {
-            gameObject.transform.Translate(new Vector2(0, -32));
+            buttonDown = true;
+            iTween.MoveBy(gameObject, iTween.Hash("y", -32f));
             _movedirection = 4;
         }
+        if(buttonDown == true)
+        {
+            buttonWait -= Time.deltaTime;
+        }
+        if(buttonWait < 0)
+        {
+            buttonWait = 1.05f;
+            buttonDown = false;
+        }
+
     }
     public int getMoveDirection()
     {
