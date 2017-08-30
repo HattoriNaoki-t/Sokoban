@@ -9,75 +9,55 @@ public class PlayerMove : MonoBehaviour {
 
     public GameObject stage;
 
-    [SerializeField, Range(0, 10)]
-    float time = 1;
-    Vector2 endPosition;
-    private bool moveflag = false; 
+    public float buttonWait=1.05f;
 
+    public bool buttonDown = false;
 
     // Use this for initialization
     void Start () {
         _movedirection = 0;
-
-        stage.GetComponent<Stage>().getPlayerPositon();
-
-    }
+	}
 	
 	// Update is called once per frame
 	void Update ()
     {
         _movedirection = 0;
 
-        if (_movedirection == 0)
+        if (stage.GetComponent<Stage>().isthrough("left") && Input.GetKeyDown(KeyCode.LeftArrow)&&buttonDown == false)
         {
-            stage.GetComponent<Stage>().getPlayerPositon();
-        }
-
-        if (stage.GetComponent<Stage>().isthrough("left") && Input.GetKeyDown(KeyCode.LeftArrow))
-        {
+            buttonDown = true;
+            //gameObject.transform.Translate(new Vector2(-32,0));
+            iTween.MoveBy(gameObject, iTween.Hash("x", -32f));
             _movedirection = 1;
         }
-        if (stage.GetComponent<Stage>().isthrough("right") && Input.GetKeyDown(KeyCode.RightArrow))
+        if (stage.GetComponent<Stage>().isthrough("right") && Input.GetKeyDown(KeyCode.RightArrow) && buttonDown == false)
         {
+            buttonDown = true;
+            iTween.MoveBy(gameObject, iTween.Hash("x", 32f));
             _movedirection = 2;
         }
-        if (stage.GetComponent<Stage>().isthrough("up") && Input.GetKeyDown(KeyCode.UpArrow) )
+        if (stage.GetComponent<Stage>().isthrough("up") && Input.GetKeyDown(KeyCode.UpArrow) && buttonDown == false)
         {
+            buttonDown = true;
+            iTween.MoveBy(gameObject, iTween.Hash("y", 32f));
             _movedirection = 3;
         }
-        if (stage.GetComponent<Stage>().isthrough("down") && Input.GetKeyDown(KeyCode.DownArrow))
+        if (stage.GetComponent<Stage>().isthrough("down") && Input.GetKeyDown(KeyCode.DownArrow) && buttonDown == false)
         {
+            buttonDown = true;
+            iTween.MoveBy(gameObject, iTween.Hash("y", -32f));
             _movedirection = 4;
         }
-        if(_movedirection != 0)
+        if(buttonDown == true)
         {
-            moveflag = true;
+            buttonWait -= Time.deltaTime;
         }
-        endPosition = new Vector2(-304 + (stage.GetComponent<Stage>().getPlayerPositon()[0] - 32) * 32, 224 + stage.GetComponent<Stage>().getPlayerPositon()[1] * -32);
-        if (endPosition != (Vector2)gameObject.transform.position)
+        if(buttonWait < 0)
         {
-            gameObject.transform.position = new Vector2(gameObject.transform.position.x - 1, gameObject.transform.position.y);
+            buttonWait = 1.05f;
+            buttonDown = false;
         }
 
-
-        switch (_movedirection)
-        {
-            case 1:
-                break;
-            case 2:
-                endPosition = new Vector2(-304 + stage.GetComponent<Stage>().getPlayerPositon()[0] * 32, 224 + stage.GetComponent<Stage>().getPlayerPositon()[1] * -32);
-                gameObject.transform.position = new Vector2(gameObject.transform.position.x + 1, gameObject.transform.position.y);
-                break;
-            case 3:
-                endPosition = new Vector2(-304 + stage.GetComponent<Stage>().getPlayerPositon()[0] * 32, 224 + stage.GetComponent<Stage>().getPlayerPositon()[1] * -32);
-                gameObject.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + 1);
-                break;
-            case 4:
-                endPosition = new Vector2(-304 + stage.GetComponent<Stage>().getPlayerPositon()[0] * 32, 224 + stage.GetComponent<Stage>().getPlayerPositon()[1] * -32);
-                gameObject.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y - 1);
-                break;
-        }
-        
     }
     public int getMoveDirection()
     {
